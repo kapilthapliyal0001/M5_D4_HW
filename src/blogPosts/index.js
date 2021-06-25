@@ -72,10 +72,24 @@ blogRouter.post("/", postValidation, async (req, res, next) => {
     // validation result gives back a list of errors coming from the userValidation Middleware
     if (errors.isEmpty()) {
       const file = getPost();
-      console.log(req.body, ": this is the body of the request");
-      const new_file = {...req.body, _id: uniqid(), created_at: new Date()};
+      // console.log(req.body, ": this is the body of the request");
+      const new_file = {
+        ...req.body,
+        _id: uniqid(),
+        created_at: new Date(),
+        cover: `https://picsum.photos/200/300.jpg`,
+        author: {
+          name: req.body.name,
+          avatar: `https://picsum.photos/200/200.jpg`,
+        },
+        content: `<div ${req.body.content}</div>`,
+        readTime: {
+          value: Math.floor(req.body.content.split(" ").length / 228),
+          unit: "Minutes",
+        },
+      };
       file.push(new_file);
-      console.log(file);
+      // console.log(file);
       putPost(file);
       res.status(201).send(new_file);
     } else {
